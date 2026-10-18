@@ -631,6 +631,7 @@
     closeText2: 'Sizleri aramızda görmekten mutluluk duyarız.',
     families: [ { side: 'Gelin tarafı', names: 'Hanife & Orhan', surname: 'Yenigün' },
                 { side: 'Damat tarafı', names: 'Emine & Kamuran', surname: 'Sağ' } ],
+    ics: 'takvim.ics',                         // iPhone'da "Takvime ekle" bu dosyayı açar (derle.py üretir; davetiye.html ile AYNI klasörde yayınlanmalı)
     rsvp: { url: 'https://script.google.com/macros/s/AKfycbyDL_uTMitWe1Ye7eFGm-mnijClLSWOp374otz_GaBEsqI2absX3xvjpDwjmJXTDrto6A/exec', maxGuests: 10 },          // katılım formu: Google E-Tablo'daki Apps Script web uygulamasının adresi (…/exec)
     door: { sealY: .5 },                       // mührün kapıdaki yüksekliği (0 üst, 1 alt)
     petals: { count: 170, seal: 46, screen: 40, blow: true, blowDb: -24, gravity: .46,   // kapıdaki, mührün üstündeki, kapı dışındaki yaprak sayısı; üfleme (mikrofonla yaprakları uçurma) ve hassasiyeti (dBFS: küçüldükçe hassas); yerçekimi
@@ -1390,7 +1391,7 @@
 
   /* ---------- davetiye metinleri ---------- */
   try{
-    $('#greet').textContent = guest ? ('Sevgili ' + guest) : 'Sevgili misafirimiz';
+    if(guest) $('#greet').textContent = 'Sevgili ' + guest; else $('#greet').hidden = true;   // isimli link (?k=Ad) yoksa selamlama yok
     $('#k1kick').textContent = CONFIG.kick || 'Evleniyoruz';
     $('#n1').textContent = CONFIG.p1; $('#n2').textContent = CONFIG.p2;
     $('#k1date').textContent = fmt({day:'numeric'}) + ' · ' + monthLong + ' · ' + fmt({year:'numeric'});
@@ -1415,7 +1416,10 @@
     $('#mapBtn').href = 'https://www.google.com/maps/search/?api=1&query=' + enc(CONFIG.venue + ' ' + (CONFIG.mapQuery || CONFIG.address));
     var iso = function(x){ return x.toISOString().replace(/[-:]|\.\d{3}/g,''); };
     var end = new Date(+D + 5*36e5);
-    $('#calBtn').href = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + enc(CONFIG.p1+' & '+CONFIG.p2+' '+(CONFIG.event||'Düğün')) +
+    // iPhone/iPad/Mac: telefonun kendi Takvim'i (.ics, derle.py üretir, davetiye.html'in yanında); diğerleri (Android): Google Takvim
+    var apple=/iP(hone|ad|od)|Macintosh/.test(navigator.userAgent);
+    if(apple&&CONFIG.ics) $('#calBtn').href = CONFIG.ics;
+    else $('#calBtn').href = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + enc(CONFIG.p1+' & '+CONFIG.p2+' '+(CONFIG.event||'Düğün')) +
       '&dates=' + iso(D) + '/' + iso(end) + '&location=' + enc(CONFIG.venue+', '+CONFIG.address) + '&details=' + enc((CONFIG.event||'Düğün')+' davetiyemize hoş geldiniz.');
   }catch(e){}
 
