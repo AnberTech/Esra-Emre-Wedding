@@ -18,7 +18,9 @@
       window.__PC=true; document.documentElement.classList.add('pc-modu');   // 'pc' değil: kartların sınıfı .pc
       var st=document.createElement('style'); st.textContent='html.pc-modu .veil,html.pc-modu #app{display:none!important}'; document.head.appendChild(st);
     }
-  }catch(e){} })();
+  }catch(e){}
+  if(!window.__PC) document.documentElement.classList.add('bekle');
+  })();
 </script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="theme-color" content="#f2f0ed">
@@ -28,7 +30,8 @@
   html,body{margin:0;background:#f2f0ed}
   .veil{position:fixed;inset:0;z-index:100;background:#f2f0ed url(data:image/webp;base64,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) center/cover no-repeat;display:grid;place-items:center;transition:opacity .7s ease,visibility 0s linear .7s}
   .ready .veil{opacity:0;visibility:hidden}
-  .veil svg{width:min(60vw,290px);height:auto;overflow:visible;animation:eeNefes 2.6s ease-in-out 2.9s infinite}
+  .bekle #app{visibility:hidden}   /* E&E yazılırken arkadaki sayfa çizilmez (görseller o an açılıp animasyonu takıltmasın); ana script başlayınca kalkar */
+  .veil svg{width:min(60vw,290px);height:auto;overflow:visible;animation:eeNefes 2.6s ease-in-out 2.9s infinite;will-change:transform}   /* kendi katmanı: harfler çizilirken arkadaki mermer zemin her karede yeniden çizilmesin (Safari) */
   .veil path{fill:url(#eeAltin);fill-opacity:0;stroke:#6b4e27;stroke-width:9;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;
     animation:eeYaz 1.15s cubic-bezier(.45,.1,.35,1) forwards,eeDol .9s ease 1.95s forwards}
   .veil path:nth-of-type(2){animation-duration:.8s,.9s;animation-delay:.8s,1.95s}
@@ -634,8 +637,15 @@
 </div>
 
 <script>
-(function(){
+(function basla(){
   'use strict';
+  // iPhone'da ölçüldü (2026-10-18): bu hazırlık harfler yazılırken çalışınca perde 76–225 ms donuyordu.
+  // Harfler yazılıp dolana kadar bekler; o sırada perde yalnız "nefes alır" (ekran kartında, takılmaz). Bilgisayar çerçevesi ve azaltılmış hareket beklemez.
+  if(!window.__PC && !basla.gecti){
+    basla.gecti=true; var rm=false; try{ rm=matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+    var kalan=rm?0:2950-performance.now(); if(kalan>0){ setTimeout(basla,kalan); return; }
+  }
+  document.documentElement.classList.remove('bekle');
   if(window.__PC){   // bilgisayar: sayfayı çerçevede yeniden aç, bu kopya hiçbir şey çalıştırmasın
     var f=document.createElement('div'); f.className='pc-sahne';
     f.innerHTML='<iframe title="Davetiye" allow="autoplay; fullscreen" src="'+location.href.split('#')[0]+'"></iframe>';
