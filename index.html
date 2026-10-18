@@ -1305,7 +1305,9 @@
     });
   }
   function updateUI(){
-    PIECES.forEach(function(P,i){ var n=P.node; n.setAttribute('aria-hidden',i===cur?'false':'true'); try{ n.inert=(i!==cur); }catch(e){} n.classList.toggle('vis',i===cur || n.classList.contains('anim') || n.classList.contains('hold')); if(i===cur) n.style.opacity=''; n.classList.toggle('top',i===cur); });
+    PIECES.forEach(function(P,i){ var n=P.node, et=i===cur;
+      if(n._et!==et){ n._et=et; n.setAttribute('aria-hidden',et?'false':'true'); try{ n.inert=!et; }catch(e){} }   // yalnız değişen kart (her geçişte 7 kartı baştan yazmak Safari'de pahalı)
+      n.classList.toggle('vis',et || n.classList.contains('anim') || n.classList.contains('hold')); if(et) n.style.opacity=''; n.classList.toggle('top',et); });
     [].forEach.call(dotsEl.children,function(b,i){ b.setAttribute('aria-current',i===cur?'true':'false'); });
     $('#cdbar').classList.toggle('last',cur===N-1);
     $('#nextBtn').setAttribute('aria-label',cur===N-1?'Başa dön':'Sonraki kart');
@@ -1314,7 +1316,7 @@
   // kart, o an etkin kart DEĞİLSE gizlenir (hızlı ileri-geride etkin kart kaybolmasın)
   function hideIfOff(n){ if(cur<0||n!==PIECES[cur].node) n.classList.remove('vis'); }
   // her hareket bitince: hareketsiz kalan, etkin olmayan kartlar gizlenir (boşta yalnız tek kart görünür; parmak sürüklerken dokunulmaz)
-  function tidy(){ if(g||cur<0) return; PIECES.forEach(function(P,i){ var n=P.node; if(i!==cur&&!n._a&&!n._fin&&!n.classList.contains('hold')) n.classList.remove('vis'); }); }
+  function tidy(){ if(g||cur<0) return; PIECES.forEach(function(P,i){ var n=P.node; if(i!==cur&&!n._a&&!n._fin&&!n.classList.contains('hold')){ n.classList.remove('vis'); n.classList.remove('in'); } }); }
   // bir karttaki yarım kalmış hareketi durdur: kart o anki yerinde kalır, eski bitiş işlemleri çalışmaz
   function stopMove(n){
     if(n._a){ var cs=getComputedStyle(n), t=cs.transform, o=cs.opacity; n._a.onfinish=null; n._a.cancel(); n._a=null; n.style.transform=(t&&t!=='none')?t:''; n.style.opacity=o; }
@@ -1346,28 +1348,28 @@
   var goGen=0;
   // iptal edilen goTo adımı: kart hareketsizse son yerine anında geçer (başka bir hareket sürüyorsa ona dokunulmaz)
   function skip(P,t){ var n=P.node; if(n._a||n._fin) return; n.style.transition='none'; n.style.transform=t; hideIfOff(n); }
-  function textIn(n){ n.classList.remove('in'); void n.offsetWidth; n.classList.add('in'); }
-  // ileri: kart elden kalkar gibi hafifçe yükselip büyür, sonra yumuşak bir yayla yukarı süzülüp gider
+  function textIn(n){ if(n.classList.contains('in')){ n.classList.remove('in'); void n.offsetWidth; } n.classList.add('in'); }   // gizli kartta 'in' yoktur: zorla yerleşim hesabı gerekmez
+  // ileri: kart duraksamadan yukarı süzülüp gider, alttaki kart aynı anda yerine oturur
   function next(fromDrag){
     if(cur<0) return;
     if(cur>=N-1){ goTo(0); return; }
     goGen++; var P=PIECES[cur]; hideSwipe(); P.node.classList.remove('lift');
     var gone=tf(P,GONE.dx,GONE.dy,GONE.dr,.97);
-    var fr=fromDrag ? [{transform:P.node.style.transform||tf(P,0,0,0)},{transform:gone}]
-      : [{transform:tf(P,0,0,0),easing:'cubic-bezier(.3,.7,.4,1)'},{transform:tf(P,-4,-20,-.8,1.035),offset:.22,easing:'cubic-bezier(.55,0,.8,.3)'},{transform:gone}];
-    ucur(P.node,fr,{duration:fromDrag?480:800},function(){ hideIfOff(P.node); });
+    // tek ve kesintisiz hareket (kullanıcı: "önce öne gelip sonra gitmesi rahatsız ediyor"): hemen yola çıkar, hafifçe büyüyerek hızlanır
+    var fr=[{transform:fromDrag?(P.node.style.transform||tf(P,0,0,0)):tf(P,0,0,0)},{transform:gone}];
+    ucur(P.node,fr,{duration:fromDrag?480:680,easing:fromDrag?'cubic-bezier(.3,.6,.6,1)':'cubic-bezier(.45,.05,.75,.6)'},function(){ hideIfOff(P.node); });
     cur++; var Q=PIECES[cur];
     // alttaki kart: hafif küçük ve saydamdan yerine oturur
     Q.node.classList.add('vis'); var o0=parseFloat(Q.node.style.opacity); if(isNaN(o0)) o0=0; Q.node.style.opacity='';
-    ucur(Q.node,[{transform:tf(Q,0,26,0,.955),opacity:o0},{transform:tf(Q,0,0,0),opacity:1}],{duration:720,delay:fromDrag?0:170,easing:'cubic-bezier(.2,.8,.2,1)',fill:'backwards'});
+    ucur(Q.node,[{transform:tf(Q,0,22,0,.96),opacity:o0},{transform:tf(Q,0,0,0),opacity:1}],{duration:620,delay:fromDrag?0:60,easing:'cubic-bezier(.2,.8,.2,1)',fill:'backwards'});
     showBelow(); updateUI(); textIn(Q.node);
   }
-  // geri: önceki kart yukarıdan iner, hafifçe yaylanarak yerine oturur
+  // geri: önceki kart yukarıdan yumuşakça iner
   function prev(){
     if(cur<=0) return;
     goGen++; var O=PIECES[cur]; cur--; var P=PIECES[cur]; P.node.classList.add('vis');
     var from=P.node.style.transform||tf(P,GONE.dx,GONE.dy,GONE.dr);
-    ucur(P.node,[{transform:from},{transform:tf(P,0,7,0,1.008),offset:.8},{transform:tf(P,0,0,0)}],{duration:700,easing:'cubic-bezier(.22,.75,.3,1)'});
+    ucur(P.node,[{transform:from},{transform:tf(P,0,0,0)}],{duration:620,easing:'cubic-bezier(.22,.75,.3,1)'});   // esnemeden, yumuşakça yerine iner
     // şimdiki kart geriye doğru küçülerek solar (önceki kart üstüne iner)
     ucur(O.node,[{transform:tf(O,0,0,0),opacity:1},{transform:tf(O,0,14,0,.955),opacity:0}],{duration:440,delay:90,easing:'cubic-bezier(.4,0,.8,.4)'},function(){
       O.node.classList.remove('hold'); hideIfOff(O.node); O.node.style.opacity=''; O.node.style.transform=tf(O,0,0,0); });
