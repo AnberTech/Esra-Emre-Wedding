@@ -198,6 +198,8 @@
   .glw i{position:absolute;left:-50%;top:-50%;width:200%;height:200%;
     background:radial-gradient(closest-side,rgba(255,255,255,.42),rgba(255,255,255,.14) 45%,rgba(255,255,255,0) 72%) no-repeat 50% 50%/46% 34%;
     transform:rotate(-28deg)}
+  /* translateZ(1px): yazı katmanı mermerin hemen önünde; kart eğikken (3B) dokunuşlar düğmeleri bulsun (yoksa dokunuşu .tx alıyordu) */
+  .pc>.c3>.tx{transform:translateZ(1px)}
   .pc>.c3>.tx{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;text-align:center;transition:opacity .45s ease;text-shadow:0 1px 0 rgba(255,255,255,.75)}
   .pc:not(.top):not(.anim)>.c3>.tx{opacity:0;transition-duration:.2s}   /* giden kart yazısıyla birlikte uçar */
   .laurel .st,.laurel .lf,.olive .st,.olive .lf,.olive .ol{fill:none;stroke:currentColor;stroke-width:.9}
@@ -262,25 +264,45 @@
   .t5 .band{position:absolute;left:0;right:0;top:46px;display:flex;flex-direction:column;align-items:center}
   .t5 .band .ttl{font:italic 400 32px/1.1 var(--f-serif);margin-top:4px;color:var(--ink)}
   .t5 .band .rule{margin:8px 0 0}
-  .rsvp{position:absolute;left:46px;right:44px;top:140px;display:flex;flex-direction:column;align-items:center;gap:13px}
+  .rkart{position:absolute;left:44px;right:44px;top:150px;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .rkart[hidden]{display:none}
+  .rsor{margin-bottom:10px;font:italic 400 20px/1.38 var(--f-serif);color:var(--ink);text-wrap:balance}
+  .rkart .ac{width:100%;min-height:52px;border:1px solid rgba(154,132,103,.65);border-radius:999px;background:rgba(255,253,249,.4);
+    font:italic 500 20px/1 var(--f-serif);color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:0 6px 18px -12px rgba(50,38,28,.45)}
+  .rkart .ac[data-v="1"]{background:var(--rose);border-color:var(--rose);color:#fbf6f1}
+  .rkart .ac:active{transform:scale(.98)}
+  /* katılım penceresi: tam ekran, sade; açıkken arkadaki deste gizlenir ve animasyonlar durur (klavye açılırken donma olmasın) */
+  .rs-sheet{position:fixed;inset:0;z-index:60;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+    background:var(--wall) var(--mermer) center/cover no-repeat;opacity:0;transition:opacity .25s}
+  .rs-sheet.acik{opacity:1}
+  .rs-sheet[hidden]{display:none}
+  .formda #page,.formda .page{visibility:hidden}
+  .rs-in{position:relative;max-width:400px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 54px) 26px 40px;text-align:center}
+  .rs-x{position:absolute;right:14px;top:calc(env(safe-area-inset-top,0px) + 12px);width:42px;height:42px;padding:0;border:0;border-radius:50%;
+    background:rgba(251,249,245,.7);color:var(--ink);cursor:pointer;box-shadow:0 0 0 1px rgba(255,255,255,.9),0 6px 16px -10px rgba(50,38,28,.5)}
+  .rs-x svg{width:18px;height:18px}
+  .rs-ttl{margin:4px 0 6px;font:italic 400 34px/1.1 var(--f-serif);color:var(--ink)}
+  .rsvp{display:flex;flex-direction:column;align-items:center;gap:16px;padding:24px 22px 22px;border-radius:22px;
+    background:rgba(253,251,247,.82);box-shadow:0 0 0 1px rgba(255,255,255,.95),0 0 0 2px rgba(154,132,103,.25),0 18px 40px -24px rgba(50,38,28,.5)}
+  .rsvp .kick{margin:0}
   .rsvp .fld{display:block;width:100%;text-align:left}
-  .rsvp .fld span,.kisi span{display:block;font:500 8.6px/1.2 var(--f-sans);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
-  .rsvp input{display:block;width:100%;margin-top:3px;padding:4px 2px 5px;border:0;border-bottom:.8px solid rgba(154,132,103,.6);border-radius:0;background:transparent;font:400 17px/1.2 var(--f-serif);color:var(--ink);outline:0;-webkit-appearance:none;appearance:none}
+  .rsvp .fld span,.kisi span{display:block;font:500 9.5px/1.2 var(--f-sans);letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft)}
+  .rsvp input{display:block;width:100%;margin-top:4px;padding:6px 2px 7px;border:0;border-bottom:.8px solid rgba(154,132,103,.6);border-radius:0;background:transparent;font:400 18px/1.2 var(--f-serif);color:var(--ink);outline:0;-webkit-appearance:none;appearance:none}
   .rsvp input:focus{border-bottom-color:var(--rose)}
   .rsvp .tuzak{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
   .rsvp .ch{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
-  .rsvp .opt{min-height:40px;padding:0 4px;border:1px solid rgba(154,132,103,.6);border-radius:999px;background:rgba(255,253,249,.35);font:italic 500 16px/1 var(--f-serif);color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .25s,color .25s,border-color .25s}
+  .rsvp .opt{min-height:44px;padding:0 4px;border:1px solid rgba(154,132,103,.6);border-radius:999px;background:rgba(255,253,249,.35);font:italic 500 17px/1 var(--f-serif);color:var(--ink);cursor:pointer;-webkit-tap-highlight-color:transparent}
   .rsvp .opt.on{background:var(--rose);border-color:var(--rose);color:#fbf6f1}
   .kisi{display:flex;align-items:center;gap:12px;width:100%}
   .kisi[hidden]{display:none}
   .kisi span{flex:1;text-align:left}
-  .kisi .st{width:34px;height:34px;border:1px solid rgba(154,132,103,.6);border-radius:50%;background:rgba(255,253,249,.35);font:400 20px/1 var(--f-serif);color:var(--ink);cursor:pointer;padding:0}
-  .kisi b{min-width:18px;font:500 20px/1 var(--f-serif);font-variant-numeric:lining-nums;color:var(--ink)}
-  .rsvp .gon{margin-top:2px;cursor:pointer;background:transparent;color:var(--ink)}
+  .kisi .st{width:40px;height:40px;border:1px solid rgba(154,132,103,.6);border-radius:50%;background:rgba(255,253,249,.35);font:400 22px/1 var(--f-serif);color:var(--ink);cursor:pointer;padding:0}
+  .kisi b{min-width:20px;font:500 22px/1 var(--f-serif);font-variant-numeric:lining-nums;color:var(--ink)}
+  .rsvp .gon{margin-top:4px;cursor:pointer;background:var(--rose);border-color:var(--rose);color:#fbf6f1;min-width:160px;justify-content:center}
   .rsvp .gon:disabled{opacity:.55}
-  .rsvp .msg{min-height:1.3em;margin-top:-6px;font:italic 400 14px/1.3 var(--f-serif);color:var(--rose)}
+  .rsvp .msg{min-height:1.3em;margin-top:-6px;font:italic 400 15px/1.3 var(--f-serif);color:var(--rose)}
   .tesek{position:absolute;left:36px;right:36px;top:170px;display:flex;flex-direction:column;align-items:center}
-  .tesek[hidden],.rsvp[hidden]{display:none}
+  .tesek[hidden]{display:none}
   .tesek .big{font:italic 400 21px/1.38 var(--f-serif);color:var(--ink);text-wrap:balance}
   /* 6. hava: yuvarlak madalyon + küçük not plakası */
   .t6{padding-top:48px}
@@ -549,18 +571,11 @@
           <div class="slab"></div>
           <div class="tx t5">
             <div class="band"><p class="kick">Lütfen bildirin</p><h2 class="ttl" style="margin:0">Katılım</h2><div class="rule"><i></i><b></b><i></i></div></div>
-            <form class="rsvp" id="rsvp" novalidate>
-              <label class="fld"><span>Adınız soyadınız</span><input id="rAd" name="ad" type="text" maxlength="80" autocomplete="name" enterkeyhint="done" required></label>
-              <div class="ch" role="radiogroup" aria-label="Katılım durumu">
-                <button type="button" class="opt" data-v="1" role="radio" aria-checked="false">Katılıyorum</button>
-                <button type="button" class="opt" data-v="0" role="radio" aria-checked="false">Katılamıyorum</button>
-              </div>
-              <div class="kisi" id="rKisiW" hidden><span>Kaç kişi?</span><button type="button" class="st" id="rEksi" aria-label="Bir kişi azalt">−</button><b id="rKisi" aria-live="polite">1</b><button type="button" class="st" id="rArti" aria-label="Bir kişi artır">+</button></div>
-              <label class="fld"><span>Notunuz (isteğe bağlı)</span><input id="rNot" name="not" type="text" maxlength="200" enterkeyhint="done"></label>
-              <input class="tuzak" name="web" tabindex="-1" autocomplete="off" aria-hidden="true">
-              <button type="submit" class="pill gon" id="rGon">Gönder</button>
-              <p class="msg" id="rMsg" role="status"></p>
-            </form>
+            <div class="rkart" id="rKart">
+              <p class="rsor">Katılım durumunuzu bildirirseniz çok seviniriz.</p>
+              <button type="button" class="ac" data-v="1">Katılıyorum</button>
+              <button type="button" class="ac" data-v="0">Katılamıyorum</button>
+            </div>
             <div class="tesek" id="rTes" hidden><p class="big" id="rTesY"></p><button type="button" class="pill" id="rDeg">Cevabı değiştir</button></div>
           </div>
         </section>
@@ -596,6 +611,24 @@
       <span class="cd-done" id="cdDone" hidden></span>
       <button type="button" class="nx" id="nextBtn" aria-label="Sonraki kart"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 16V4M5.5 8.5L10 4l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </aside>
+  </div>
+  <div class="rs-sheet" id="rSheet" role="dialog" aria-modal="true" aria-labelledby="rsTtl" hidden>
+    <div class="rs-in">
+      <button type="button" class="rs-x" id="rKapat" aria-label="Kapat"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+              <form class="rsvp" id="rsvp" novalidate>
+                <p class="kick">Katılım</p><h2 class="rs-ttl" id="rsTtl">Katılım</h2>
+                <label class="fld"><span>Adınız soyadınız</span><input id="rAd" name="ad" type="text" maxlength="80" autocomplete="name" enterkeyhint="done" required></label>
+                <div class="ch" role="radiogroup" aria-label="Katılım durumu">
+                  <button type="button" class="opt" data-v="1" role="radio" aria-checked="false">Katılıyorum</button>
+                  <button type="button" class="opt" data-v="0" role="radio" aria-checked="false">Katılamıyorum</button>
+                </div>
+                <div class="kisi" id="rKisiW" hidden><span>Kaç kişi?</span><button type="button" class="st" id="rEksi" aria-label="Bir kişi azalt">−</button><b id="rKisi" aria-live="polite">1</b><button type="button" class="st" id="rArti" aria-label="Bir kişi artır">+</button></div>
+                <label class="fld"><span>Notunuz (isteğe bağlı)</span><input id="rNot" name="not" type="text" maxlength="200" enterkeyhint="done"></label>
+                <input class="tuzak" name="web" tabindex="-1" autocomplete="off" aria-hidden="true">
+                <button type="submit" class="pill gon" id="rGon">Gönder</button>
+                <p class="msg" id="rMsg" role="status"></p>
+              </form>
+    </div>
   </div>
   <div class="dondur" role="alert"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="15" y="6" width="18" height="36" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M21 37.5h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Davetiyeyi görmek için<br>telefonunuzu dik tutun</div>
 </div>
@@ -1192,7 +1225,7 @@
     // yalnız üstteki ve hareket etmeyen kartta çalışır
     var kart=(into||after).closest('.pc');
     Parilti.basla({isik:k.firstChild, yildiz:st, cila:stone?m.firstChild:null,
-      aktif:function(){ return !document.hidden && kart.classList.contains('top') && !kart.classList.contains('mov'); }});
+      aktif:function(){ return !document.hidden && !root.classList.contains('formda') && kart.classList.contains('top') && !kart.classList.contains('mov'); }});
   }
   (function(){ var sd=$('.t3 .sedef'); if(sd) parilti(null,'sedef',null,sd); })();
   PIECES.forEach(function(P,i){
@@ -1216,7 +1249,7 @@
     window.addEventListener('pointermove',function(e){ if(!root.classList.contains('revealed')) return; gx=(e.clientX/innerWidth-.5)*2; gy=(e.clientY/innerHeight-.5)*2; lastIn=performance.now(); },{passive:true});
     if(RM) return;
     (function loop(now){
-      if(root.classList.contains('revealed')){
+      if(root.classList.contains('revealed')&&!root.classList.contains('formda')){
         var tx=gx, ty=gy;
         if(now-lastIn>2500){ var q=now/1000; tx=Math.sin(q*.45)*.55; ty=Math.cos(q*.33)*.45; }
         ax+=(tx-ax)*.06; ay+=(ty-ay)*.06;
@@ -1384,7 +1417,7 @@
   stackEl.addEventListener('pointerup',endDrag); stackEl.addEventListener('pointercancel',endDrag);
   var wl=0, wacc=0;
   stackEl.addEventListener('wheel',function(e){ e.preventDefault(); if(cur<0) return; var now=Date.now(); if(now<wl) return; wacc+=e.deltaY; if(wacc>40){ wacc=0; wl=now+650; if(cur<N-1) next(); } else if(wacc<-40){ wacc=0; wl=now+650; prev(); } },{passive:false});
-  document.addEventListener('keydown',function(e){ if(cur<0) return; var k=e.key; if(e.target&&e.target.closest&&e.target.closest('input,textarea,select')) return;
+  document.addEventListener('keydown',function(e){ if(cur<0) return; var k=e.key; if(root.classList.contains('formda')||(e.target&&e.target.closest&&e.target.closest('input,textarea,select'))) return;
     if((k===' '||k==='Enter')&&e.target&&e.target.closest&&e.target.closest('a,button,input,textarea,select,[contenteditable]')) return; if(k==='ArrowDown'||k==='PageDown'||k===' '||k==='ArrowRight'){ e.preventDefault(); if(cur<N-1) next(); } else if(k==='ArrowUp'||k==='PageUp'||k==='ArrowLeft'){ e.preventDefault(); prev(); } else if(k==='Home'){ goTo(0); } });
   $('#nextBtn').addEventListener('click',function(){ next(); });
 
@@ -1494,19 +1527,35 @@
   /* ---------- katılım formu: cevap Google E-Tablo'ya gider (CONFIG.rsvp.url = Apps Script web uygulaması) ---------- */
   try{ (function(){
     var R=CONFIG.rsvp||{}, f=$('#rsvp'), ad=$('#rAd'), nt=$('#rNot'), msg=$('#rMsg'), gon=$('#rGon'), tes=$('#rTes'), kw=$('#rKisiW'), kb=$('#rKisi');
+    var sh=$('#rSheet'), kart=$('#rKart'), ttl=$('#rsTtl');
     var gel=null, kisi=1, KEY='rsvp-'+CONFIG.p1+CONFIG.p2+CONFIG.date;
     var oku=function(){ try{ return JSON.parse(localStorage.getItem(KEY)||'null'); }catch(e){ return null; } };
     var yaz=function(v){ try{ localStorage.setItem(KEY,JSON.stringify(v)); }catch(e){} };
     if(guest) ad.value=guest;
-    function sec(v){ gel=v; $$('.opt',f).forEach(function(b){ var on=b.getAttribute('data-v')===(v?'1':'0'); b.classList.toggle('on',on); b.setAttribute('aria-checked',on?'true':'false'); }); kw.hidden=!v; msg.textContent=''; }
+    function sec(v){ gel=v; $$('.opt',f).forEach(function(b){ var on=b.getAttribute('data-v')===(v?'1':'0'); b.classList.toggle('on',on); b.setAttribute('aria-checked',on?'true':'false'); }); kw.hidden=!v; msg.textContent=''; ttl.textContent=v?'Katılıyorum':'Katılamıyorum'; }
     function sayi(n){ kisi=Math.max(1,Math.min(R.maxGuests||10,n)); kb.textContent=kisi; }
     function goster(v){
       $('#rTesY').textContent = v.gel ? 'Teşekkür ederiz, '+v.ad+'! Sizi '+(v.kisi>1?v.kisi+' kişi olarak ':'')+'aramızda görmeyi dört gözle bekliyoruz.' : 'Haber verdiğiniz için teşekkür ederiz, '+v.ad+'. Sizi özleyeceğiz.';
-      f.hidden=true; tes.hidden=false;
+      kart.hidden=true; tes.hidden=false;
     }
     $$('.opt',f).forEach(function(b){ b.addEventListener('click',function(){ sec(b.getAttribute('data-v')==='1'); }); });
     $('#rEksi').addEventListener('click',function(){ sayi(kisi-1); }); $('#rArti').addEventListener('click',function(){ sayi(kisi+1); });
-    $('#rDeg').addEventListener('click',function(){ tes.hidden=true; f.hidden=false; });
+    // pencere: açılınca arkadaki deste gizlenir (root.formda) → kart eğimi ve parıltı durur; klavye yalnız sade bir sayfayı iter
+    function ac(v){
+      if(v!=null) sec(v);
+      root.classList.add('formda'); sh.hidden=false; sh.scrollTop=0;
+      requestAnimationFrame(function(){ sh.classList.add('acik'); });
+      if(!ad.value) ad.focus(); else $('#rGon').focus({preventScroll:true});   // dokunuşla aynı anda odak: iPhone klavyeyi açar
+    }
+    function kapa(){
+      if(document.activeElement&&document.activeElement.blur) document.activeElement.blur();
+      sh.classList.remove('acik'); root.classList.remove('formda'); sh.hidden=true;
+      window.scrollTo(0,0); window.dispatchEvent(new Event('resize'));
+    }
+    $$('.ac',kart).forEach(function(b){ b.addEventListener('click',function(){ ac(b.getAttribute('data-v')==='1'); }); });
+    $('#rKapat').addEventListener('click',kapa);
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!sh.hidden) kapa(); });
+    $('#rDeg').addEventListener('click',function(){ tes.hidden=true; kart.hidden=false; ac(null); });
     [ad,nt].forEach(function(i){ i.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); i.blur(); } }); });
     var eski=oku(); if(eski){ ad.value=eski.ad; nt.value=eski.not||''; sec(eski.gel); sayi(eski.kisi||1); goster(eski); }
     f.addEventListener('submit',function(e){
@@ -1515,15 +1564,13 @@
       if(v.ad.length<2){ msg.textContent='Lütfen adınızı yazın.'; ad.focus(); return; }
       if(gel===null){ msg.textContent='Lütfen katılım durumunuzu seçin.'; return; }
       if(!R.url){ msg.textContent='Katılım formu çok yakında açılacak.'; return; }
-      if(f.web.value){ goster(v); return; }   // görünmez alan doluysa otomatik gönderimdir
+      if(f.web.value){ goster(v); kapa(); return; }   // görünmez alan doluysa otomatik gönderimdir
       gon.disabled=true; msg.textContent='Gönderiliyor…';
       fetch(R.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({ad:v.ad,gelecek:v.gel,kisi:v.kisi,not:v.not})})
         .then(function(r){ return r.json(); })
-        .then(function(j){ if(!j||!j.ok) throw 0; gon.disabled=false; msg.textContent=''; yaz(v); goster(v); })
+        .then(function(j){ if(!j||!j.ok) throw 0; gon.disabled=false; msg.textContent=''; yaz(v); goster(v); kapa(); })
         .catch(function(){ gon.disabled=false; msg.textContent='Gönderilemedi. İnternet bağlantınızı kontrol edip tekrar deneyin.'; });
     });
-    // klavye kapanınca sayfa yerine otursun (iPhone kaydırmış olabilir)
-    [ad,nt].forEach(function(i){ i.addEventListener('blur',function(){ setTimeout(function(){ if(!/^(INPUT|TEXTAREA)$/.test((document.activeElement||{}).tagName||'')) { window.scrollTo(0,0); window.dispatchEvent(new Event('resize')); } },60); }); });
   })(); }catch(e){}
 
   /* ---------- hava durumu (mürekkep çizimi simgeler) ---------- */
